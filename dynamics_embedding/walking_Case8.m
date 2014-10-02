@@ -6,8 +6,8 @@ last_step = 0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Options
     opt = struct();
-    nsteps =2;                  % Domains number (1SSP/1DSP: nsteps=2)
-    opt.ctrl_method = 'IO'; % Controller mode 'IO' 'QP-MinNorm' 'QP-CLF'
+    nsteps =40;                  % Domains number (1SSP/1DSP: nsteps=2)
+    opt.ctrl_method = 'QP-CLF'; % Controller mode 'IO' 'QP-MinNorm' 'QP-CLF'
     opt.dt1 = 2;                % 1st domain time (SSP)
     opt.dt2 = 1;                % 2nd domain time (DSP)
     step_h = 0.1;               % half step length
@@ -58,7 +58,7 @@ for i = 1:ndomains
     domains{i} = domainConfig_Case8(i,opt);
 end
 
-FootTrajGen(hstep_l,step_h);
+% FootTrajGen(hstep_l,step_h);
 ref = Ref();
 ref.h = struct();
 ref.h.calcs = {};
@@ -115,12 +115,12 @@ for k = 1:nsteps
         last_step=1;
     end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Options           
-%     if(k==2) % For debugging
-%         Stime=0.03;
-%     else
-%         Stime =domains{Index,1}.time;
-%     end        
-  Stime =domains{Index,1}.time; % For normal domain time, please uncomment it
+    if(k==12) % For debugging
+        Stime=0.8;
+    else
+        Stime =domains{Index,1}.time;
+    end        
+%   Stime =domains{Index,1}.time; % For normal domain time, please uncomment it
 
 %   Replan for each step
 %     if(mod(k,2)==1)

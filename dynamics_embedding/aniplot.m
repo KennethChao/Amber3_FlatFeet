@@ -1,5 +1,3 @@
-
-
 load('figs/simulation_data');
 nSteps = size(calcs_set,1)/2;
 ndomains = 2;
@@ -46,19 +44,17 @@ set(fig_hl,'Position', [20 80 800 800])
                 pos = jpos_mat(qe)+[ones(1,13);zeros(1,13)]*px;
                 
                 posStack(:,i)=[pos(1,:)';pos(2,:)'];
-                set(sleg, 'XData', pos(1,1:8), 'YData', pos(2,1:8), ...
+                set(sleg, 'XData', pos(1,1:8), 'YData', pos(2,1:8)-pos(2,2), ...
                     'erasemode', 'normal');
-                set(nleg, 'XData', pos(1,8:end), 'YData', pos(2,8:end), ...
+                set(nleg, 'XData', pos(1,8:end), 'YData', pos(2,8:end)-pos(2,2), ...
                     'erasemode', 'normal');
-                set(torso, 'XData', pos(1,6:7), 'YData', pos(2,6:7), ...
+                set(torso, 'XData', pos(1,6:7), 'YData', pos(2,6:7)-pos(2,2), ...
                     'erasemode', 'normal');
                 set(pZMP, 'XData', ZMP(i)+px, 'YData', 0, ...
                     'erasemode', 'normal');                
                 
 %                new_axis=anim_axis+[pos(1,6) pos(1,6) 0 0];
 %                 axis(new_axis)
-    
-    
                 drawnow();
                 pause(0.01);
                 if 1
@@ -91,7 +87,8 @@ set(fig_hl,'Position', [20 80 800 800])
                 
              end
              if mod(k,2)==1
-                pxtemp = pos(1,13)-pos(1,1);
+                pxtemp = pxtemp+pos(1,12)-pos(1,2);
+                pos(2,2)
              else
                 px= pxtemp;
              end

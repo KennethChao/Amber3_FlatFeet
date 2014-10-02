@@ -37,7 +37,7 @@ ep = domain.qp.ep;
 % Outputs
 [ya, Jya, dJya, yd, dydt, ddydt, ...
     output_indices, ~, ~,~] = calcOutputsCase8(domain,x,t,f_firststep,f_laststep,domains);
-t
+% t
 % not used in case 8
     % ya1 = Jdelta_phip_sca(x)*dqe;
     % yd1 = domain.vhip;
@@ -193,7 +193,7 @@ switch domain.controllerType
         if(det(A'*A)<10^-12)       
            try
            H=A'*A+eye(size(A,2))*10^-20;
-           det(A'*A)
+%            det(A'*A)
            catch
            ppp=1;
            end
@@ -253,15 +253,15 @@ switch domain.controllerType
  if domain.type ==1
  % calc.ZMP =-Fe(3)/Fe(2);  
  % Fe = -XiInv \ (Jedot * dqe + Je / He * (Be * u - Ce));
- 
 
- 
     if f_firststep==1
-        xzmp = 0.12-pos(3);
-        nxzmp =  -0.02-pos(3);
+%         xzmp = 0.12;
+%         nxzmp =  -0.02;
+        xzmp = -0.03;
+        nxzmp =  -0.12;
     else
-        xzmp = 0.12-pos(3);
-        nxzmp =  -0.02-pos(3);       
+        xzmp = -0.03;
+        nxzmp =  -0.12;  
 %         xzmp = 1.2+pos(11);
 %         nxzmp = -0.03+pos(11);%-0.014-0.2;        
     end
@@ -278,15 +278,15 @@ switch domain.controllerType
  
 %         LfLfZMPx =  (-XiInv \ (Jedot * dqe + Je / He * ( - Ce)));
 %         LfLgZMPx =  (-XiInv\(Je/He*Be ));
-        xzmp = 0.12+0.1;
-        nxzmp =  -0.03+0.1; 
+        xzmp = -0.03+0.1;
+        nxzmp =  -0.12;
         pos = jpos_mat(qe);
         pos(2,:) = []; 
         
-        Aiq_ZMPH = [zeros(1,1), [0 (-pos(3)+xzmp) 1 0 (-pos(11)+xzmp) 1]*(-LfLgZMPx)];
-        Aiq_ZMPL = [zeros(1,1), [0 (-pos(3)+nxzmp) 1 0 (-pos(11)+nxzmp) 1]*(LfLgZMPx)]; 
-        biq_ZMPH = [0 (-pos(3)+xzmp) 1 0 (-pos(11)+xzmp) 1]*(LfLfZMPx);           
-        biq_ZMPL = [0 (-pos(3)+nxzmp) 1 0 (-pos(11)+nxzmp) 1]*(-LfLfZMPx); 
+        Aiq_ZMPH = [zeros(1,1), [0 (-pos(2)+xzmp) 1 0 (-pos(12)+xzmp) 1]*(-LfLgZMPx)];
+        Aiq_ZMPL = [zeros(1,1), [0 (-pos(2)+nxzmp) 1 0 (-pos(12)+nxzmp) 1]*(LfLgZMPx)]; 
+        biq_ZMPH = [0 (-pos(2)+xzmp) 1 0 (-pos(12)+xzmp) 1]*(LfLfZMPx);           
+        biq_ZMPL = [0 (-pos(2)+nxzmp) 1 0 (-pos(12)+nxzmp) 1]*(-LfLfZMPx); 
         
         Aiq_GRF_R = [zeros(1,1), [0 0 0 0 -1 0 ]*(LfLgZMPx)];
         biq_GRF_R = [0 0 0 0 -1 0 ]*(-LfLfZMPx)+5;           
@@ -305,7 +305,7 @@ switch domain.controllerType
 
  end    
      [   up,xxx,existflag] = quadprog(2*Hp,fp',Aiq,biq,[],[],[],[],[],domain.qp.opts);   
-             existflag
+      fprintf('\ntime = %e, existflag = %u',t,existflag)  ;     %existflag
      try
           u=up(2:7);
      catch

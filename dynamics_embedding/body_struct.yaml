@@ -15,71 +15,71 @@ bodies:
   axis: [0.0, 0.0, 1.0]
   name: dof2
   lambda: 1.0
-- mass: 1.06914
+- mass: 1.151
   offset: [0.0, 0.0]
-  com: [-0.17047, 0.01076]
-  I: 0.007643537170000001
+  com: [0.11451, 0.00687]
+  I: 0.008982671224802546
   type: r
   axis: [1.0, 0.0, 0.0]
   name: dof3
   lambda: 2.0
-- mass: 4.22757
-  offset: [-0.2, 0.05]
-  com: [0.00145, 0.23752]
-  I: 0.04661541223
+- mass: 3.86506
+  offset: [-0.1524, 0.0508]
+  com: [0.0, 0.21968]
+  I: 0.028425222845823703
   type: r
   axis: [1.0, 0.0, 0.0]
   name: dof4
   lambda: 3.0
-- mass: 8.90135
-  offset: [0.0, 0.42]
-  com: [-0.0063, 0.26826]
-  I: 0.26701780616000004
+- mass: 3.86506
+  offset: [0.0, 0.4064]
+  com: [0.0, 0.21968]
+  I: 0.028425222845823703
   type: r
   axis: [1.0, 0.0, 0.0]
   name: dof5
   lambda: 4.0
-- mass: 51.38
-  offset: [0.0, 0.42]
-  com: [0.0, 0.24]
-  I: 0.41198196666666664
+- mass: 10.41876
+  offset: [0.0, 0.4064]
+  com: [0.0, 0.2511]
+  I: 0.147542602
   type: r
   axis: [1.0, 0.0, 0.0]
   name: dof6
   lambda: 5.0
-- mass: 8.90135
+- mass: 3.86506
   offset: [0.0, 0.0]
-  com: [-0.0063, -0.15174]
-  I: 0.26701780616000004
+  com: [0.0, -0.18672]
+  I: 0.028425222845823703
   type: r
   axis: [-1.0, 0.0, 0.0]
   name: dof7
   lambda: 6.0
-- mass: 4.22757
-  offset: [0.0, -0.42]
-  com: [0.00145, -0.18248]
-  I: 0.04661541223
+- mass: 3.86506
+  offset: [0.0, -0.4064]
+  com: [0.0, -0.18672]
+  I: 0.028425222845823703
   type: r
   axis: [-1.0, 0.0, 0.0]
   name: dof8
   lambda: 7.0
-- mass: 1.06914
-  offset: [0.0, -0.42]
-  com: [0.02953, -0.03924]
-  I: 0.007643537170000001
+- mass: 1.151
+  offset: [0.0, -0.4064]
+  com: [0.11451, -0.04393]
+  I: 0.008982671224802546
   type: r
   axis: [-1.0, 0.0, 0.0]
   name: dof9
   lambda: 8.0
 positions:
 - dof: 3.0
-  offset: [-0.2, 0.05]
+  offset: [-0.1524, 0.0508]
   name: sfoot
 - dof: 3.0
   offset: [0.0, 0.0]
   name: stoe
 - dof: 3.0
-  offset: [-0.3, 0.0]
+  offset: [-0.2032, 0.0]
   name: sheel
 - dof: 4.0
   offset: [0.0, 0.0]
@@ -91,7 +91,7 @@ positions:
   offset: [0.0, 0.0]
   name: ship
 - dof: 6.0
-  offset: [0.0, 0.31]
+  offset: [0.0, 0.2511]
   name: Torso
 - dof: 7.0
   offset: [0.0, 0.0]
@@ -106,10 +106,10 @@ positions:
   offset: [0.0, 0.0]
   name: nsfoot
 - dof: 9.0
-  offset: [0.2, -0.05]
+  offset: [0.1524, -0.0508]
   name: nstoe
 - dof: 9.0
-  offset: [-0.1, -0.05]
+  offset: [-0.0508, -0.0508]
   name: nsheel
 plot_order: [sfoot, stoe, sheel, sfoot, sknee, ship, Torso, nship, nsknee, nsfoot,
   nsheel, nstoe, nsfoot]
