@@ -334,174 +334,7 @@ switch domain.controllerType
         Fe = -XiInv \ (Jedot * dqe + Je / He * (Be * u - Ce));
         dx = vfc + gfc * u;
       
-    case 'QP-OCLF'
-        Ie = eye(nb+ndof);
-        XiInv = Je * (He \ Je');
-        vfc = [
-            dqe;
-            He \ ((Je' * (XiInv \ (Je / He)) - Ie) * Ce - Je' * (XiInv \ Jedot * dqe))];
-        gfc = [
-            zeros(size(Be));
-            He \ (Ie - Je'* (XiInv \ (Je / He))) * Be];
-        % First Lie Derivatives
-        %         Lfy1 = Dy1*vf;
-        Lfy2 = Dy2(output_indices,:)*vfc;
-        % Second Lie Derivatives
-        LfLfy2 = DLfy2(output_indices,:)*vfc;
-
-        LgLfy2 = DLfy2(output_indices,:)*gfc;
-%% CLF
-        etac = [ 
-        y2(output_indices); 
-        Lfy2-dydt(output_indices)];
-%         y2(1)=y2(1)*100;
-        outputNumb=size(output_indices,2);
-        F=[zeros(outputNumb,outputNumb) eye(outputNumb);zeros(outputNumb,outputNumb*2)];    
-        G=[zeros(outputNumb,outputNumb); eye(outputNumb)];
-
-        Q=eye(outputNumb*2);
-        P=care(F,G,Q);  
-        
-        Pe = blkdiag(eye(outputNumb)*ep,eye(outputNumb))*P*blkdiag(eye(outputNumb)*ep,eye(outputNumb));
-
-        V=etac'*Pe*etac;
-        LfV = etac'*(F'*Pe+Pe*F)*etac;
-        LgV = 2*etac'*Pe*G;
-
-        [~, eigvl]=eig(Pe);
-        lambdaPemax = max(max(eigvl));
-       
-        gamma =1/lambdaPemax ;
-        psi0= LfV+gamma*ep*V;
-        psi1=LgV';
-        
-        % feedback controller
-        A = LgLfy2;        
-
-%% u-based        
-        if(det(A'*A)<10^-80)       
-           try
-           H=A'*A+eye(size(A,2))*10^-80;
-           det(A'*A)
-           catch
-           ppp=1;
-           end
-        else
-        H=A'*A;
-        end 
-        f=2*(LfLfy2-ddydt(output_indices))'*A;
-
-        Aiq_CLF = psi1'*A;
-        biq_CLF = -1*(psi0+psi1'*(LfLfy2-ddydt(output_indices)));
-
-%% u-based w/ relaxation
-
-%% w/ torqe constraint & ZMP constaint
-
-% ZMP inequality constraints
-        xzmp = -0.05;
-        nxzmp =  -0.23;%-0.014-0.2;
-        uMax=75;
-        ActuatorNumb = 6;    
-        
-        Hp=blkdiag(10 ,2*H);
-        fp=[0,f];       
-        
-        Aiq_CLFr=[-1,Aiq_CLF]; %w/ relaxation & CLF constrains
-        
-% torque inequality constraints added        
-        Aiq_torqueH =[zeros(ActuatorNumb,1) eye(ActuatorNumb) ]; % torque Aiq: Higher bound
-        Aiq_torqueL =[zeros(ActuatorNumb,1) eye(ActuatorNumb).*(-1) ]; % torque Aiq: Lower bound
-       
-        biq_torque = uMax.*ones(ActuatorNumb,1); % negative bound & positive bound share the same biq_torque
-        
-        Aiq = [Aiq_CLFr;Aiq_torqueH;Aiq_torqueL ]  ; %Gathered Aiq, biq        
-        biq = [biq_CLF;biq_torque;biq_torque];            
-
-        LfLfZMPx =  - (-XiInv \ (Jedot * dqe + Je / He * ( - Ce)));
-        LfLgZMPx =  (-XiInv\(Je/He*Be ));
-
- if domain.type ==1
- % calc.ZMP =-Fe(3)/Fe(2);  
- % Fe = -XiInv \ (Jedot * dqe + Je / He * (Be * u - Ce));
-
- 
-    if f_firststep==1
-        xzmp = -0.04;
-        nxzmp =  -0.20;
-    else
-        pos = jpos_mat(qe);
-        pos(2,:) = [];         
-        xzmp = -0.05+pos(12);
-        nxzmp = -0.23+pos(12);%-0.014-0.2;        
-    end
-
-    
-        Aiq_ZMPH = [zeros(1,1), [0 -xzmp -1]*LfLgZMPx];
-        Aiq_ZMPL = [zeros(1,1), [0 nxzmp 1]*LfLgZMPx]; 
-        biq_ZMPH = [0 -xzmp -1]*LfLfZMPx;           
-        biq_ZMPL = [0 nxzmp 1]*LfLfZMPx;   
-        
-        Aiq = [Aiq;Aiq_ZMPH ;Aiq_ZMPL];
-        biq = [biq;biq_ZMPH ;biq_ZMPL];
- else
- % calc.ZMP =( Fe(3)+Fe(6)-pos(2)*Fe(2)-pos(12)*Fe(5) )/(-Fe(2)-Fe(5));
-    
-        pos = jpos_mat(qe);
-        pos(2,:) = []; 
-        
-
-        
-        Aiq_ZMPH = [zeros(1,1), [0 (-pos(2)+xzmp) 1 0 (-pos(12)+xzmp) 1]*(-LfLgZMPx)];
-        Aiq_ZMPL = [zeros(1,1), [0 (-pos(2)+nxzmp) 1 0 (-pos(12)+nxzmp) 1]*(-XiInv\(Je/He*Be ))]; 
-        biq_ZMPH = [0 (-pos(2)+xzmp) 1 0 (-pos(12)+xzmp) 1]*(-XiInv \ (Jedot * dqe + Je / He * ( - Ce)));           
-        biq_ZMPL = [0 (-pos(2)+nxzmp) 1 0 (-pos(12)+nxzmp) 1]*(XiInv \ (Jedot * dqe + Je / He * ( - Ce))); 
-        
-        Aiq_GRF_R = [zeros(1,1), [0 0 0 0 -1 0 ]*(-XiInv\(Je/He*Be ))];
-        biq_GRF_R = [0 0 0 0 -1 0 ]*(XiInv \ (Jedot * dqe + Je / He * ( - Ce)));           
-        Aiq_GRF_L = [zeros(1,1), [0 -1 0 0 0 0 ]*(-XiInv\(Je/He*Be ))];
-        biq_GRF_L = [0 -1 0 0 0 0 ]*(XiInv \ (Jedot * dqe + Je / He * ( - Ce)));           
-        
-        Aiq = [Aiq;Aiq_GRF_R ;Aiq_GRF_L;Aiq_ZMPH;Aiq_ZMPL];
-        biq = [biq;biq_GRF_R ;biq_GRF_L;biq_ZMPH;biq_ZMPL];  
- end
- %% 
-
- plan_IC = [ya(1)-y0(1);y_ComVX([qe;dqe]);0];
- [H_plan, f_plan, A_plan, b_plan, Aeq_plan, beq_plan, N] = COM_replan( t, y0(2), 0.1 ,plan_IC,domain.type, domains,ndomains)        ;
-  
- 
- %%%%%
- LfLf_xcomA = DLfy2(1,:)*vfc;
- LgLf_xcomA = DLfy2(1,:)*gfc;
- 
- Aeq_synthesis = [0,-(y0(2)/9.81)*LgLf_xcomA, 1, zeros(1,N-1)];
- beq_synthesis = (y0(2)/9.81)*LfLf_xcomA;
- %%%%%
- 
-
- Aiq_O   = blkdiag(Aiq,A_plan);
- biq_O   = [biq;
-            b_plan];
- Aeq_O   = [Aeq_synthesis;zeros(size(Aeq_plan,1),ActuatorNumb+1),Aeq_plan];
- beq_O   = [beq_synthesis;beq_plan];        
- H_O = blkdiag(Hp,zeros(N,N));        
- f_O = [fp,zeros(N,1)'];       
-        
- [up,~,existflag] = quadprog(2*H_O,f_O',Aiq_O,biq_O,Aeq_synthesis,beq_synthesis,[],[],[],domain.qp.opts);   
-             existflag
-     try
-          u=up(2:7);
-     catch
-      
-         u
-     end
-
-        mu = A*u+(LfLfy2-ddydt(output_indices));
-%% Update Fe and dx
-        Fe = -XiInv \ (Jedot * dqe + Je / He * (Be * u - Ce));
-        dx = vfc + gfc * u;
-      
+   
     otherwise
         error('Invalid control: %s', domain.controller );
 end
@@ -571,11 +404,11 @@ if nargin > 4
     pos(2,:) = [];      
     
     if domain.type ==1
-    calc.ZMP = -Fe(3)/Fe(2)+pos(3);
+    calc.ZMP = -Fe(3)/Fe(2);
     else
        
 
-    calc.ZMP =( Fe(3)+Fe(6)-pos(3)*Fe(2)-pos(11)*Fe(5) )/(-Fe(2)-Fe(5));
+    calc.ZMP =( Fe(3)+Fe(6)-pos(2)*Fe(2)-pos(12)*Fe(5) )/(-Fe(2)-Fe(5));
 
     end
     

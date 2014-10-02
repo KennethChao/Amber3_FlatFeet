@@ -1,0 +1,3 @@
+function [x_pe_sfoot_vec] = pe_sfoot_vec(x)
+x_pe_sfoot_vec=[(-0.0508).*(3..*cos(x(3)) + sin(x(3))) + x(1),0.0508.*(cos(x(3))  ...
+  + (-3.).*sin(x(3))) + x(2)];

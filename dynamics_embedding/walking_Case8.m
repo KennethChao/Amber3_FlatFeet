@@ -14,7 +14,7 @@ last_step = 0;
     hstep_l = 0.1;              % Step height
 %     use_replan_estep = true;
 % options
-    use_spatial  = false;  
+    use_spatial  = true  
     use_extra    = true;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% Options    
 
@@ -23,7 +23,7 @@ matlab_utilities_depends('general', 'sim');
 
 addpath('./expr/model');
 addpath('./expr/control');
-addpath('./build_torso');
+% addpath('./build_torso');
 
 
 %%
@@ -58,7 +58,7 @@ for i = 1:ndomains
     domains{i} = domainConfig_Case8(i,opt);
 end
 
-% FootTrajGen(hstep_l,step_h);
+FootTrajGen(hstep_l,step_h);
 ref = Ref();
 ref.h = struct();
 ref.h.calcs = {};
@@ -78,13 +78,13 @@ x_plus = apply_reset(x_minus,domains{end},ref);
 x0 = x_plus;
 
 y0=zeros(6,1);
-%     y0(1)= y_ComX(x0);
-%     y0(2)= y_ComZ(x0);
-%     y0(3)= y_TorsoAngle(x0);
-%     y0(4)= y_NonStanceFootX(x0);
-%     y0(5)= y_NonStanceFootZ(x0);
-%     y0(6)= y_NonStanceFootAng(x0);
-    y0 = ya2_vec(x0);
+    y0(1)= y_ComX(x0);
+    y0(2)= y_ComZ(x0);
+    y0(3)= y_TorsoAngle(x0);
+    y0(4)= y_NonStanceFootX(x0);
+    y0(5)= y_NonStanceFootZ(x0);
+    y0(6)= y_NonStanceFootAng(x0);
+%     y0 = ya2_vec(x0);
 
     ComX=y0(1);% y_ComX(x0);
     ComVx=0; %y_ComVX(x0);        
@@ -151,12 +151,12 @@ for k = 1:nsteps
         plot(Data2(1,:)+0.1,Data2(2,:),'r-o')        
         hold off
         calcs_set{k} = calcs;
-%             y0(1)= y_ComX(x0);
-%             y0(2)= y_ComZ(x0);
-%             y0(3)= 0;%y_TorsoAngle(x0);
-%             y0(4)= y_NonStanceFootX(x0);
-%             y0(5)= y_NonStanceFootZ(x0);
-%             y0(6)= 0;%y_NonStanceFootAng(x0);
+            temp(1)= y_ComX(x0);
+            temp(2)= y_ComZ(x0);
+            temp(3)= 0;%y_TorsoAngle(x0);
+            temp(4)= y_NonStanceFootX(x0);
+            temp(5)= y_NonStanceFootZ(x0);
+            temp(6)= 0;%y_NonStanceFootAng(x0);
             
 %             ComX= y_ComX(x0);
 %             ComVx= y_ComVX(x0);        
@@ -165,7 +165,7 @@ for k = 1:nsteps
 %             ComAx = 9.81/ComZ*(-(Zmp-Xinitial)+(ComX-Xinitial));
 %             ComAx2 = calcs.ComAx(end);
 %             X0 =[ComX-Xinitial;ComVx;Zmp-Xinitial-0.1];
-              temp = ya2_vec(x0); 
+%               temp = ya2_vec(x0); 
                  
       if Index==1      
           Index=2;

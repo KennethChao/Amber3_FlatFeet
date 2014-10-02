@@ -94,15 +94,15 @@ dJya = zeros(no, 2*(nb+ndof));
 %        dJya(i,:) =dJcur(x);
 % end
 
-%  ya = yout(x);
+ ya = yout(x);
 % % sum(ya2-ya)
-%  Jya = Jyout(x);
+ Jya = Jyout(x);
 % sum(sum(Jya2-Jya))
-%  dJya = dJy_out(x);
+ dJya = dJy_out(x);
 
- ya = ya2_vec(x);
- Jya = Dya2_mat(x);
- dJya = DLfya2_mat(x);
+%  ya = ya2_vec(x);
+%  Jya = Dya2_mat(x);
+%  dJya = DLfya2_mat(x);
 
 
 % sum(sum(dJya2-dJya))

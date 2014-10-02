@@ -1,0 +1,3 @@
+function [x_dJy_NonStanceFootAng] = dJy_NonStanceFootAng(x)
+x_dJy_NonStanceFootAng=[0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,1.,1.,1.,1.,(-1.),(-1.),(-1.)]; ...
+  
